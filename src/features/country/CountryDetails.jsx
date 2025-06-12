@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import styled from "styled-components";
 import BackButton from "../../ui/BackButton";
 import Loader from "../../ui/Loader";
+import { useDispatch } from "react-redux";
+import { createCountry } from "./CountrySlice";
+import Button from "../../ui/Button";
 
 function CountryDetails() {
 	const { isLoading, data, error } = useLoaderData();
+	const [isAdded, setIsAdded] = useState(false);
+
+	// Dispatch function
+	const dispatch = useDispatch();
 
 	if (error) {
 		return (
@@ -14,6 +21,20 @@ function CountryDetails() {
 				<BackButton>Go Back</BackButton>
 			</div>
 		);
+	}
+
+	function handleAddItem() {
+		if (!data) return;
+
+		const newCountry = {
+			id: Date.now(),
+			name: data?.city,
+			lat: data?.latitude,
+			lng: data?.longitude,
+		};
+
+		dispatch(createCountry(data?.name, newCountry));
+		setIsAdded((prev) => !prev);
 	}
 
 	if (isLoading) return <Loader />;
@@ -49,13 +70,26 @@ function CountryDetails() {
 					</tr>
 				</tbody>
 			</Table>
-			<BackButton>
-				<span>&larr;</span>
-				<span>Go Back</span>
-			</BackButton>
+			<Btns>
+				<BackButton>
+					<span>&larr;</span>
+					<span>Go Back</span>
+				</BackButton>
+				{!isAdded && (
+					<Button onClick={handleAddItem}>
+						<span>Add City</span>
+					</Button>
+				)}
+			</Btns>
 		</div>
 	);
 }
+const Btns = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 1.2rem;
+`;
 
 const Table = styled.table`
 	width: 100%;

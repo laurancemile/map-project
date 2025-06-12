@@ -74,7 +74,9 @@ export async function searchLoader({ request }) {
 
 const ErrorMsg = styled.p`
 	color: red;
-	margin-top: 1rem;
+	margin-top: 3.2rem;
+	font-size: 1.3rem;
+	font-weight: 500;
 `;
 
 const SearchStyles = styled.div`
